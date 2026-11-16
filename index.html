@@ -256,10 +256,6 @@ section.page.active { display: block; }
 .character-info h3 { font-size: 26px; color: var(--fox); margin-bottom: 10px; }
 .character-info p { font-size: 14px; color: var(--brown); line-height: 1.6; }
 
-/* ============================================================
-   🛍️ МАГАЗИН — страница товара теперь ВНУТРИ shop-page
-   Это решает проблему прыжков скролла
-   ============================================================ */
 .shop-header {
     display: flex;
     align-items: center;
@@ -307,9 +303,6 @@ section.page.active { display: block; }
 .product-info h3 { font-size: 22px; color: var(--dark); margin-bottom: 8px; }
 .product-price { font-size: 20px; color: var(--fox); font-weight: 600; font-family: 'Cormorant Garamond', serif; }
 
-/* 🎯 СТРАНИЦА ТОВАРА — теперь внутри shop-page
-   Скрывается/показывается через класс .active
-   НЕ влияет на скролл, т.к. мы остаёмся в той же секции */
 .product-detail {
     display: none;
     padding: 20px 0 0;
@@ -319,7 +312,6 @@ section.page.active { display: block; }
 }
 .product-detail.active { display: block; }
 
-/* Когда открыт товар — скрываем шапку магазина и список товаров */
 #shop-page.viewing-detail .shop-header,
 #shop-page.viewing-detail .products-grid {
     display: none;
@@ -751,11 +743,37 @@ section.page.active { display: block; }
     grid-template-columns: 1fr auto;
     gap: 15px;
     align-items: start;
+    position: relative;
 }
 .comment-main { min-width: 0; }
 .comment-author { font-weight: 600; color: var(--fox); margin-bottom: 6px; font-family: 'Cormorant Garamond', serif; font-size: 19px; }
 .comment-text { color: var(--brown); font-size: 14px; line-height: 1.6; }
 .comment-date { font-size: 12px; color: var(--brown); opacity: 0.5; margin-top: 8px; }
+
+/* 🗑️ КНОПКА УДАЛЕНИЯ КОММЕНТАРИЯ */
+.comment-delete {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--beige);
+    color: var(--brown);
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0.5;
+}
+.comment-delete:hover {
+    background: #c0392b;
+    color: var(--soft-white);
+    opacity: 1;
+    transform: scale(1.1);
+}
 
 .comment-fanart {
     width: 110px;
@@ -837,6 +855,27 @@ section.page.active { display: block; }
     border: none;
 }
 .image-modal-close:hover { background: var(--fox); color: var(--soft-white); transform: rotate(90deg); }
+
+/* 🚫 МОДАЛЬНОЕ ОКНО ЦЕНЗУРЫ — img100 */
+.censorship-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(74, 52, 36, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 1300;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+}
+.censorship-modal.active { display: flex; }
+.censorship-modal img {
+    width: 50vw;
+    height: 50vh;
+    object-fit: contain;
+    animation: zoomIn 0.4s ease;
+    filter: drop-shadow(0 20px 50px rgba(0, 0, 0, 0.5));
+}
 
 footer { background: var(--beige); padding: 60px 30px 40px; text-align: center; margin-top: 80px; border-top: 1px solid rgba(184, 111, 63, 0.2); }
 .footer-logos {
@@ -940,6 +979,7 @@ footer p { color: var(--brown); font-size: 14px; margin-bottom: 10px; max-width:
     .socials-content { padding: 35px 20px; }
     .comment { grid-template-columns: 1fr; }
     .comment-fanart { width: 100%; height: 200px; }
+    .censorship-modal img { width: 80vw; height: 40vh; }
 }
 </style>
 </head>
@@ -961,9 +1001,9 @@ footer p { color: var(--brown); font-size: 14px; margin-bottom: 10px; max-width:
         <div class="header-content">
             <img src="./images/img1.png" alt="За Лисом" class="header-logo" onclick="scrollToTop()">
             <p class="header-description">
-                «За Лисом» — это иллюстрированная вселенная, где каждый герой хранит свою историю,
-                а каждая страница дышит теплом осенних лесов и тихими сказками.
-                Добро пожаловать в мир, созданный с любовью.
+                «За Лисом» — это иллюстрированная история о храбрости, приключениях и большой дружбе.
+                Этот проект создается маленькими кирчпиками, а в его работу вкладдывается любовь.  Присоединяйтесь к нам, чтобы вместе открыть волшебную вселенную и поддержать автора.
+                Добро пожаловать.
             </p>
         </div>
     </header>
@@ -981,7 +1021,7 @@ footer p { color: var(--brown); font-size: 14px; margin-bottom: 10px; max-width:
     <section class="page active" id="home-page">
         <div class="video-section">
             <h2 class="section-title">Анимационный ролик</h2>
-            <p class="section-subtitle">откройте вселенную в движении</p>
+            <p class="section-subtitle">в разработке</p>
             <div class="gif-wrap">
                 <img src="./images/video1.gif" alt="Анимационный ролик">
             </div>
@@ -995,7 +1035,7 @@ footer p { color: var(--brown); font-size: 14px; margin-bottom: 10px; max-width:
                     <img src="./images/img63.png" alt="Слониха Роза">
                     <div class="character-info">
                         <h3>Слониха Роза</h3>
-                        <p>Маленький лидер с большим чувством ответственности. Роза знает всё лучше всех (и это факт!), она упряма, но справедлива. За ней — как за каменной стеной.</p>
+                        <p>Маленький лидер с большим чувством ответственности. Роза знает всё лучше всех, она упряма, но справедлива. За ней — как за каменной стеной.</p>
                     </div>
                 </div>
                 <div class="character-card">
@@ -1023,12 +1063,6 @@ footer p { color: var(--brown); font-size: 14px; margin-bottom: 10px; max-width:
         </div>
     </section>
 
-    <!-- ============================================================
-         🛍️ МАГАЗИН — страница товара теперь ВНУТРИ этой секции.
-         Это решает проблему прыжков скролла: мы НЕ переключаем
-         секции при открытии товара, а просто показываем/скрываем
-         блоки внутри shop-page. Скролл остаётся на месте.
-         ============================================================ -->
     <section class="page" id="shop-page">
         <div class="shop-header">
             <img src="./images/img1.png" alt="Лавка Лиса" class="shop-logo-icon">
@@ -1038,10 +1072,8 @@ footer p { color: var(--brown); font-size: 14px; margin-bottom: 10px; max-width:
             </div>
         </div>
 
-        <!-- Список товаров -->
         <div class="products-grid" id="products-grid"></div>
 
-        <!-- Детали товара — ВНУТРИ shop-page -->
         <div class="product-detail" id="product-detail">
             <button class="back-btn" onclick="backToShop()">← Назад в магазин</button>
             <div class="detail-layout">
@@ -1268,6 +1300,11 @@ footer p { color: var(--brown); font-size: 14px; margin-bottom: 10px; max-width:
     <img id="image-modal-img" src="" alt="Фан-арт">
 </div>
 
+<!-- 🚫 МОДАЛЬНОЕ ОКНО ЦЕНЗУРЫ — img100 -->
+<div class="censorship-modal" id="censorship-modal">
+    <img src="./images/img100.png" alt="Цензура">
+</div>
+
 <div class="notification" id="notification"></div>
 
 <!-- 🦊 img63 — плавающий лисёнок -->
@@ -1296,9 +1333,7 @@ function exitIntro() {
 document.addEventListener('click', exitIntro, { once: true });
 document.addEventListener('keydown', exitIntro, { once: true });
 
-/* ================= НАВИГАЦИЯ =================
-   При переключении вкладок — закрываем страницу товара,
-   если она была открыта (чтобы вернуться к списку товаров) */
+/* ================= НАВИГАЦИЯ ================= */
 const navButtons = document.querySelectorAll('.nav-btn[data-page]');
 const pages = document.querySelectorAll('section.page');
 const shopPage = document.getElementById('shop-page');
@@ -1308,7 +1343,6 @@ navButtons.forEach(btn => {
     btn.addEventListener('click', () => {
         const pageId = btn.dataset.page;
 
-        // Если переключаемся НЕ на магазин — закрываем страницу товара
         if (pageId !== 'shop-page') {
             closeProductDetail();
         }
@@ -1321,7 +1355,6 @@ navButtons.forEach(btn => {
 });
 
 function scrollToTop() {
-    // Если открыт товар — сначала закрываем его
     if (shopPage.classList.contains('viewing-detail')) {
         closeProductDetail();
     }
@@ -1330,10 +1363,10 @@ function scrollToTop() {
 
 /* ================= ТОВАРЫ ================= */
 const products = [
-    { id: 1, title: 'Секретный бокс — 1 игрушка', price: 1499, img: img('img5'), gallery: [img('img6'), img('img7'), img('img8'), img('img9'), img('img10')], description: 'Случайный секретный бокс с одной игрушкой из вселенной «За Лисом». Каждый бокс — это маленькое приключение: внутри вас ждёт герой, которого вы ещё не встречали. Идеальный подарок для себя или близких.', characteristics: [['Материал', 'Высококачественный винил'], ['Высота фигурки', '8–10 см'], ['Упаковка', 'Секретная коробка'], ['Возраст', '6+'], ['Производство', 'Россия']] },
-    { id: 2, title: 'Секретный бокс — 6 игрушек', price: 7499, img: img('img11'), gallery: [img('img12'), img('img13'), img('img14'), img('img15'), img('img16')], description: 'Большой набор из шести секретных боксов. Гарантированно выпадает вся коллекция игрушек — все герои вселенной «За Лисом» теперь будут жить на вашей полке.', characteristics: [['Материал', 'Высококачественный винил'], ['Количество', '6 фигурок'], ['Гарантия', 'Все игрушки коллекции'], ['Упаковка', 'Подарочная коробка'], ['Возраст', '6+']] },
-    { id: 3, title: 'Блокнот для записей', price: 599, img: img('img17'), gallery: [img('img18'), img('img19'), img('img20')], description: 'Уютный блокнот с иллюстрациями вселенной «За Лисом». Плотная бумага, приятная на ощупь обложка и закладка-ленточка — всё, чтобы ваши мысли и идеи обретали форму.', characteristics: [['Страниц', '120'], ['Бумага', 'Кремовая, 90 г/м²'], ['Обложка', 'Твёрдая, матовая'], ['Формат', 'A5'], ['Закладка', 'Атласная лента']] },
-    { id: 4, title: 'Скетчбук для рисования', price: 999, img: img('img21'), gallery: [img('img22'), img('img23'), img('img24')], description: 'Профессиональный скетчбук для художников и всех, кто любит рисовать. Плотная бумага подходит для карандаша, линера, акварели и маркеров.', characteristics: [['Страниц', '80'], ['Бумага', 'Акварельная, 180 г/м²'], ['Обложка', 'Твёрдая, с иллюстрацией'], ['Формат', 'A4'], ['Скрепление', 'Спираль']] },
+    { id: 1, title: 'Секретный бокс — 1 игрушка', price: 1499, img: img('img5'), gallery: [img('img6'), img('img7'), img('img8'), img('img9'), img('img10'),], description: 'Случайный секретный бокс с одной игрушкой из вселенной «За Лисом». Каждый бокс — это маленькое приключение: внутри вас ждёт любимый герой. Идеальный подарок для себя или близких.', characteristics: [['Материал', 'ткань Минки, полиэстер'], ['Высота игрушки', '8–10 см'], ['Упаковка', 'Секретная коробка'], ['Возраст', '6+'], ['Производство', 'Россия']] },
+    { id: 2, title: 'Секретный бокс — 6 игрушек', price: 7499, img: img('img11'), gallery: [img('img12'), img('img13'), img('img14'), img('img15'), img('img16')], description: 'Большой набор из шести секретных боксов. Гарантированно выпадает вся коллекция игрушек — все герои вселенной «За Лисом» теперь будут жить на вашей полке.', characteristics: [['Материал', 'ткань Минки, полиэстер'], ['Количество', '6 мягких игрушек'], ['Гарантия', 'Все игрушки коллекции'], ['Упаковка', 'Подарочная коробка'], ['Возраст', '6+']] },
+    { id: 3, title: 'Блокнот для записей', price: 599, img: img('img17'), gallery: [img('img18'), img('img19'), img('img20')], description: 'Уютный блокнот с иллюстрациями вселенной «За Лисом». Плотная бумага, приятная на ощупь обложка и закладка-ленточка — всё, чтобы ваши мысли и идеи обретали форму.', characteristics: [['Страниц', '120'], ['Бумага', 'Кремовая, 90 г/м²'], ['Обложка', 'Мягкая, матовая'], ['Формат', 'A5'], ['Закладка', 'Атласная лента']] },
+    { id: 4, title: 'Скетчбук для рисования', price: 999, img: img('img21'), gallery: [img('img22'), img('img23'), img('img24')], description: 'Профессиональный скетчбук для художников и всех, кто любит рисовать. Плотная бумага подходит для карандаша, линера, акварели и маркеров.', characteristics: [['Страниц', '80'], ['Бумага', 'Акварельная, 180 г/м²'], ['Обложка', 'Твёрдая, с иллюстрацией'], ['Формат', 'A4'], ['Скрепление', 'Прошивка']] },
     { id: 5, title: 'Чехол для телефона «Тёмный лес»', price: 1199, img: img('img25'), gallery: [img('img26'), img('img27'), img('img28'), img('img29'), img('img30'), img('img31'), img('img32')], description: 'Стильный чехол с авторской иллюстрацией «Тёмный лес». Надёжная защита и уникальный дизайн.', characteristics: [['Материал', 'Силикон + поликарбонат'], ['Принт', 'Авторская иллюстрация'], ['Защита', 'Ударопрочный'], ['Поверхность', 'Матовая, не скользит'], ['Уход', 'Протирать мягкой тканью']], hasPhoneSelector: true },
     { id: 6, title: 'Чехол для телефона «Друзья навек»', price: 1199, img: img('img33'), gallery: [img('img34'), img('img35'), img('img36'), img('img37'), img('img38'), img('img39'), img('img40')], description: 'Тёплый и душевный чехол «Друзья навек» с любимыми героями вселенной.', characteristics: [['Материал', 'Силикон + поликарбонат'], ['Принт', 'Авторская иллюстрация'], ['Защита', 'Ударопрочный'], ['Поверхность', 'Матовая, не скользит'], ['Уход', 'Протирать мягкой тканью']], hasPhoneSelector: true },
     { id: 7, title: 'Шарф', price: 1899, img: img('img42'), gallery: [img('img43'), img('img44'), img('img45')], description: 'Мягкий и тёплый шарф с авторским принтом из вселенной «За Лисом».', characteristics: [['Материал', '70% шерсть, 30% акрил'], ['Размер', '180 × 30 см'], ['Принт', 'Авторская иллюстрация'], ['Уход', 'Деликатная стирка'], ['Сезон', 'Осень / зима']] },
@@ -1359,11 +1392,6 @@ let currentProduct = null;
 let currentImageIndex = 0;
 let selectedPhone = null;
 
-/* ============================================================
-   🎯 ОТКРЫТИЕ ТОВАРА — БЕЗ ПРЫЖКОВ СКРОЛЛА
-   Мы НЕ переключаем секции, а только показываем product-detail
-   внутри shop-page. Скролл остаётся на месте.
-   ============================================================ */
 function openProduct(id) {
     currentProduct = products.find(p => p.id === id);
     currentImageIndex = 0;
@@ -1396,25 +1424,17 @@ function openProduct(id) {
         phoneContainer.innerHTML = '';
     }
 
-    // ❌ НЕ переключаем секции!
-    // ✅ Просто добавляем класс на shop-page — он скроет шапку и список товаров
     shopPage.classList.add('viewing-detail');
     productDetail.classList.add('active');
-
-    // ❌ НЕ трогаем скролл вообще!
-    // Пользователь остаётся там, где был
 }
 
-/* 🔙 ВОЗВРАТ В МАГАЗИН — тоже БЕЗ прыжков */
 function closeProductDetail() {
     shopPage.classList.remove('viewing-detail');
     productDetail.classList.remove('active');
-    // ❌ НЕ трогаем скролл!
 }
 
 function backToShop() {
     closeProductDetail();
-    // Скролл остаётся на месте — никаких scrollTo!
 }
 
 function renderGalleryDots() {
@@ -1547,6 +1567,46 @@ function selectPayment(el, method) {
     document.getElementById('card-fields').style.display = (method === 'card') ? 'block' : 'none';
 }
 
+/* ============================================================
+   📅 АВТОМАТИЧЕСКИЙ СЛЭШ В ДАТЕ КАРТЫ (MM/ГГ)
+   При вводе 2 цифр автоматически добавляется "/"
+   ============================================================ */
+const cardExpiryInput = document.getElementById('card-expiry');
+cardExpiryInput.addEventListener('input', function(e) {
+    // Убираем всё кроме цифр
+    let value = this.value.replace(/\D/g, '');
+
+    // Если введено больше 4 цифр — обрезаем
+    if (value.length > 4) {
+        value = value.substring(0, 4);
+    }
+
+    // Если введено 2 или более цифр — добавляем слэш
+    if (value.length >= 2) {
+        value = value.substring(0, 2) + '/' + value.substring(2);
+    }
+
+    this.value = value;
+});
+
+// Дополнительно: при удалении слэша вручную — корректная обработка
+cardExpiryInput.addEventListener('keydown', function(e) {
+    // Разрешаем backspace, delete, стрелки, tab
+    if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)) {
+        // Если курсор сразу после слэша и нажат backspace — удаляем и слэш тоже
+        if (e.key === 'Backspace' && this.selectionStart === 3 && this.value.charAt(2) === '/') {
+            setTimeout(() => {
+                this.value = this.value.substring(0, 2);
+            }, 0);
+        }
+        return;
+    }
+    // Блокируем всё кроме цифр
+    if (!/^\d$/.test(e.key) && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+    }
+});
+
 function isValidEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
 function isValidPhone(phone) { return phone.replace(/\D/g, '').length >= 10; }
 
@@ -1606,6 +1666,53 @@ document.getElementById('socials-modal').addEventListener('click', (e) => {
     if (e.target.id === 'socials-modal') closeSocialsModal();
 });
 
+/* ============================================================
+   🚫 ЦЕНЗУРА — проверка на нецензурную лексику
+   ============================================================ */
+const profanityList = [
+    'блять', 'блядь', 'бля', 'сука', 'суки', 'пизд', 'пизда', 'пиздец', 'хуй', 'хуя', 'хуе', 'хую', 'котакбас', 'еблан', 'ебать', 'ёбан', 'fuck', 'ёбать', 'ебну', 'ёбну', 'мудак', 'мудила', 'залупа', 'пидор', 'петух', 'гандон', 'долбоёб', 'долбоеб', 'ёб', 'еб', 'шлюха', 'бл', 'хер'
+];
+
+function containsProfanity(text) {
+    if (!text) return false;
+
+    // Приводим к нижнему регистру
+    let normalized = text.toLowerCase();
+
+    // Заменяем типичные замены букв
+    normalized = normalized
+        .replace(/ё/g, 'е')
+        .replace(/@/g, 'а')
+        .replace(/6/g, 'б')
+        .replace(/8/g, 'б')
+        .replace(/0/g, 'о')
+        .replace(/\$/g, 'с')
+        .replace(/4/g, 'ч')
+        .replace(/3/g, 'з')
+        .replace(/[!|]/g, '')
+        .replace(/\s+/g, '');
+
+    // Проверяем наличие запрещённых слов
+    for (let word of profanityList) {
+        if (normalized.includes(word)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/* 🚫 ПОКАЗАТЬ КАРТИНКУ ЦЕНЗУРЫ img100 на 2 секунды */
+let censorshipTimeout;
+function showCensorshipModal() {
+    const modal = document.getElementById('censorship-modal');
+    clearTimeout(censorshipTimeout);
+    modal.classList.add('active');
+    censorshipTimeout = setTimeout(() => {
+        modal.classList.remove('active');
+    }, 2000);
+}
+
 /* ================= КОММЕНТАРИИ С ФАН-АРТАМИ ================= */
 function loadComments(type) {
     try { return JSON.parse(localStorage.getItem('zalisom_comments_' + type) || '[]'); }
@@ -1615,6 +1722,7 @@ function saveComments(type, comments) {
     try { localStorage.setItem('zalisom_comments_' + type, JSON.stringify(comments)); }
     catch (e) { showNotification('Не удалось сохранить (слишком большой файл)'); }
 }
+
 function renderComments(type) {
     const comments = loadComments(type);
     const container = document.getElementById(type + '-comments');
@@ -1622,7 +1730,7 @@ function renderComments(type) {
         container.innerHTML = '<div class="cart-empty">Пока нет комментариев. Будьте первым!</div>';
         return;
     }
-    container.innerHTML = comments.map(c => {
+    container.innerHTML = comments.map((c, index) => {
         const fanartHtml = c.image
             ? `<div class="comment-fanart" onclick="openImageModal('${c.image.replace(/'/g, "\\'")}')">
                    <img src="${c.image}" alt="Фан-арт">
@@ -1636,9 +1744,21 @@ function renderComments(type) {
                     <div class="comment-date">${c.date}</div>
                 </div>
                 ${fanartHtml}
+                <button class="comment-delete" onclick="deleteComment('${type}', ${index})" title="Удалить">×</button>
             </div>
         `;
     }).join('');
+}
+
+/* 🗑️ УДАЛЕНИЕ КОММЕНТАРИЯ */
+function deleteComment(type, index) {
+    if (!confirm('Удалить этот комментарий?')) return;
+
+    const comments = loadComments(type);
+    comments.splice(index, 1);
+    saveComments(type, comments);
+    renderComments(type);
+    showNotification('Комментарий удалён');
 }
 
 let currentFanartData = null;
@@ -1671,6 +1791,13 @@ function addComment(type) {
     const name = document.getElementById(type + '-name').value.trim();
     const text = document.getElementById(type + '-comment').value.trim();
     if (!name || !text) { showNotification('Заполните имя и комментарий'); return; }
+
+    // 🚫 ПРОВЕРКА ЦЕНЗУРЫ
+    if (containsProfanity(name) || containsProfanity(text)) {
+        showCensorshipModal();
+        showNotification('Комментарий содержит запрещённую лексику');
+        return;
+    }
 
     const comments = loadComments(type);
     const newComment = {
@@ -1717,6 +1844,7 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         closeImageModal();
         closeSocialsModal();
+        document.getElementById('censorship-modal').classList.remove('active');
     }
 });
 
