@@ -289,6 +289,30 @@ section.page.active { display: block; }
 }
 
 .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 30px; margin-top: 40px; }
+
+/* 🎯 ЗУМ-КОНТЕЙНЕРЫ (только для галереи товара и миниатюр в комментариях) */
+.zoom-container {
+    overflow: hidden;
+    cursor: zoom-in;
+    border-radius: 20px;
+}
+.zoom-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transform: scale(1);
+    transform-origin: center center;
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.zoom-container:hover img {
+    transform: scale(1.5);
+}
+.zoom-container img.is-moving {
+    transition: none !important;
+}
+
+/* 🛍️ КАРТОЧКИ ТОВАРОВ — обычный размер, без зума */
 .product-card {
     background: var(--soft-white);
     border-radius: 20px;
@@ -298,7 +322,12 @@ section.page.active { display: block; }
     transition: all 0.5s ease;
 }
 .product-card:hover { transform: translateY(-8px); box-shadow: 0 25px 55px rgba(139, 90, 60, 0.22); }
-.product-card img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+.product-card img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+}
+
 .product-info { padding: 22px; }
 .product-info h3 { font-size: 22px; color: var(--dark); margin-bottom: 8px; }
 .product-price { font-size: 20px; color: var(--fox); font-weight: 600; font-family: 'Cormorant Garamond', serif; }
@@ -334,8 +363,13 @@ section.page.active { display: block; }
 .back-btn:hover { background: var(--fox); color: var(--soft-white); border-color: var(--fox); }
 
 .detail-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: start; }
-.detail-gallery { position: relative; border-radius: 20px; overflow: hidden; background: var(--beige); aspect-ratio: 1; }
-.detail-gallery img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.5s ease; }
+
+.detail-gallery { 
+    position: relative; 
+    background: var(--beige); 
+    aspect-ratio: 1; 
+}
+
 .gallery-nav {
     position: absolute;
     top: 50%;
@@ -351,11 +385,12 @@ section.page.active { display: block; }
     color: var(--dark);
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
+    z-index: 5;
 }
 .gallery-nav:hover { background: var(--fox); color: var(--soft-white); }
 .gallery-prev { left: 15px; }
 .gallery-next { right: 15px; }
-.gallery-dots { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
+.gallery-dots { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 5; }
 .gallery-dots span { width: 8px; height: 8px; border-radius: 50%; background: rgba(250, 243, 231, 0.6); transition: all 0.3s ease; cursor: pointer; }
 .gallery-dots span.active { background: var(--fox); width: 24px; border-radius: 4px; }
 
@@ -571,6 +606,8 @@ section.page.active { display: block; }
 .gallery-scroll::-webkit-scrollbar { height: 8px; }
 .gallery-scroll::-webkit-scrollbar-track { background: var(--beige); border-radius: 4px; }
 .gallery-scroll::-webkit-scrollbar-thumb { background: var(--fox); border-radius: 4px; }
+
+/* 🖼️ Картинки в галереях процесса и фан-артов — кликабельные, открываются на весь экран */
 .gallery-scroll img {
     flex: 0 0 auto;
     width: 300px;
@@ -579,9 +616,13 @@ section.page.active { display: block; }
     border-radius: 18px;
     scroll-snap-align: start;
     box-shadow: 0 15px 40px rgba(139, 90, 60, 0.2);
-    transition: transform 0.4s ease;
+    cursor: zoom-in;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
-.gallery-scroll img:hover { transform: scale(1.03); }
+.gallery-scroll img:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 25px 55px rgba(139, 90, 60, 0.35);
+}
 
 .social-link {
     display: inline-flex;
@@ -750,7 +791,6 @@ section.page.active { display: block; }
 .comment-text { color: var(--brown); font-size: 14px; line-height: 1.6; }
 .comment-date { font-size: 12px; color: var(--brown); opacity: 0.5; margin-top: 8px; }
 
-/* 🗑️ КНОПКА УДАЛЕНИЯ КОММЕНТАРИЯ */
 .comment-delete {
     position: absolute;
     top: 10px;
@@ -779,24 +819,11 @@ section.page.active { display: block; }
     width: 110px;
     height: 110px;
     border-radius: 12px;
-    overflow: hidden;
-    cursor: pointer;
+    cursor: zoom-in;
     box-shadow: 0 5px 15px rgba(139, 90, 60, 0.2);
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
     flex-shrink: 0;
     position: relative;
 }
-.comment-fanart img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.4s ease;
-}
-.comment-fanart:hover {
-    transform: scale(1.08);
-    box-shadow: 0 10px 25px rgba(184, 111, 63, 0.35);
-}
-.comment-fanart:hover img { transform: scale(1.1); }
 .comment-fanart::after {
     content: '🔍';
     position: absolute;
@@ -809,6 +836,7 @@ section.page.active { display: block; }
     font-size: 24px;
     opacity: 0;
     transition: opacity 0.3s ease;
+    border-radius: 12px;
 }
 .comment-fanart:hover::after { opacity: 1; }
 
@@ -856,7 +884,6 @@ section.page.active { display: block; }
 }
 .image-modal-close:hover { background: var(--fox); color: var(--soft-white); transform: rotate(90deg); }
 
-/* 🚫 МОДАЛЬНОЕ ОКНО ЦЕНЗУРЫ — img100 */
 .censorship-modal {
     position: fixed;
     inset: 0;
@@ -1002,7 +1029,7 @@ footer p { color: var(--brown); font-size: 14px; margin-bottom: 10px; max-width:
             <img src="./images/img1.png" alt="За Лисом" class="header-logo" onclick="scrollToTop()">
             <p class="header-description">
                 «За Лисом» — это иллюстрированная история о храбрости, приключениях и большой дружбе.
-                Этот проект создается маленькими кирчпиками, а в его работу вкладдывается любовь.  Присоединяйтесь к нам, чтобы вместе открыть волшебную вселенную и поддержать автора.
+                Этот проект создается маленькими шажками, а в его работу вкладывается любовь. Присоединяйтесь к нам, чтобы вместе открыть волшебную вселенную и поддержать автора.
                 Добро пожаловать.
             </p>
         </div>
@@ -1077,7 +1104,7 @@ footer p { color: var(--brown); font-size: 14px; margin-bottom: 10px; max-width:
         <div class="product-detail" id="product-detail">
             <button class="back-btn" onclick="backToShop()">← Назад в магазин</button>
             <div class="detail-layout">
-                <div class="detail-gallery">
+                <div class="detail-gallery zoom-container">
                     <img id="detail-img" src="" alt="">
                     <button class="gallery-nav gallery-prev" onclick="prevImage()">‹</button>
                     <button class="gallery-nav gallery-next" onclick="nextImage()">›</button>
@@ -1098,13 +1125,14 @@ footer p { color: var(--brown); font-size: 14px; margin-bottom: 10px; max-width:
     <section class="page" id="process-page">
         <h2 class="section-title">Процесс работы</h2>
         <p class="section-subtitle">как рождается вселенная</p>
+        <!-- 🖼️ Картинки процесса — клик открывает большое фото -->
         <div class="gallery-scroll">
-            <img src="./images/img50.jpeg" alt="Процесс">
-            <img src="./images/img51.jpeg" alt="Процесс">
-            <img src="./images/img52.jpeg" alt="Процесс">
-            <img src="./images/img53.jpeg" alt="Процесс">
-            <img src="./images/img54.png" alt="Процесс">
-            <img src="./images/img55.png" alt="Процесс">
+            <img src="./images/img50.jpeg" alt="Процесс" onclick="openImageModal(this.src)">
+            <img src="./images/img51.jpeg" alt="Процесс" onclick="openImageModal(this.src)">
+            <img src="./images/img52.jpeg" alt="Процесс" onclick="openImageModal(this.src)">
+            <img src="./images/img53.jpeg" alt="Процесс" onclick="openImageModal(this.src)">
+            <img src="./images/img54.png" alt="Процесс" onclick="openImageModal(this.src)">
+            <img src="./images/img55.png" alt="Процесс" onclick="openImageModal(this.src)">
         </div>
         <div style="text-align: center;">
             <button class="social-link" onclick="openSocialsModal()">✦ Смотреть больше процессов</button>
@@ -1124,13 +1152,14 @@ footer p { color: var(--brown); font-size: 14px; margin-bottom: 10px; max-width:
     <section class="page" id="fanart-page">
         <h2 class="section-title">Фан-арты</h2>
         <p class="section-subtitle">творчество нашего сообщества</p>
+        <!-- 🖼️ Картинки фан-артов — клик открывает большое фото -->
         <div class="gallery-scroll">
-            <img src="./images/img56.jpg" alt="Фан-арт">
-            <img src="./images/img57.jpg" alt="Фан-арт">
-            <img src="./images/img58.jpg" alt="Фан-арт">
-            <img src="./images/img59.jpg" alt="Фан-арт">
-            <img src="./images/img60.jpg" alt="Фан-арт">
-            <img src="./images/img61.png" alt="Фан-арт">
+            <img src="./images/img56.jpg" alt="Фан-арт" onclick="openImageModal(this.src)">
+            <img src="./images/img57.jpg" alt="Фан-арт" onclick="openImageModal(this.src)">
+            <img src="./images/img58.jpg" alt="Фан-арт" onclick="openImageModal(this.src)">
+            <img src="./images/img59.jpg" alt="Фан-арт" onclick="openImageModal(this.src)">
+            <img src="./images/img60.jpg" alt="Фан-арт" onclick="openImageModal(this.src)">
+            <img src="./images/img61.png" alt="Фан-арт" onclick="openImageModal(this.src)">
         </div>
         <div style="text-align: center;">
             <button class="social-link" onclick="openSocialsModal()">✦ Присоединяйтесь к сообществу</button>
@@ -1164,7 +1193,7 @@ footer p { color: var(--brown); font-size: 14px; margin-bottom: 10px; max-width:
         </div>
         <p><strong>За Лисом</strong> — иллюстрированная вселенная, созданная с теплом и вниманием к деталям.</p>
         <p>Все права защищены. Использование материалов только с разрешения автора.</p>
-        <p style="margin-top: 10px;">Связь с нами: hello@zalisom.art</p>
+        <p style="margin-top: 10px;">Связь с нами: korovodnova@yandex.ru</p>
         <div class="footer-socials">
             <a href="https://www.instagram.com/ilovemineccraft?jplx=a3VnYXpneWc5d3A3&utm_source=qr" title="Instagram">Ig</a>
             <a href="https://t.me/lela_artiste" title="Telegram">Tg</a>
@@ -1274,15 +1303,15 @@ footer p { color: var(--brown); font-size: 14px; margin-bottom: 10px; max-width:
         <h3>Наши соцсети</h3>
         <p>Следите за вселенной «За Лисом» ✦</p>
         <div class="socials-grid">
-            <a href="#" target="_blank" class="social-btn">
+            <a href="https://youtube.com/@pimomom?si=9yFu2-vJARcdYfAA" target="_blank" class="social-btn">
                 <svg viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
                 YouTube
             </a>
-            <a href="#" target="_blank" class="social-btn">
+            <a href="https://vk.ru/id1044755569" target="_blank" class="social-btn">
                 <svg viewBox="0 0 24 24" fill="#0077FF"><path d="M15.684 0H8.316C1.592 0 0 1.592 0 8.316v7.368C0 22.408 1.592 24 8.316 24h7.368C22.408 24 24 22.408 24 15.684V8.316C24 1.592 22.391 0 15.684 0zm3.692 17.123h-1.744c-.66 0-.864-.525-2.05-1.727-1.033-1-1.49-1.135-1.744-1.135-.356 0-.458.102-.458.593v1.575c0 .424-.135.678-1.253.678-1.846 0-3.896-1.118-5.335-3.202C4.624 10.857 4.03 8.57 4.03 8.096c0-.254.102-.491.593-.491h1.744c.44 0 .61.203.78.677.863 2.49 2.303 4.675 2.896 4.675.22 0 .322-.102.322-.66V9.721c-.068-1.186-.695-1.287-.695-1.71 0-.204.17-.407.44-.407h2.744c.373 0 .508.203.508.643v3.473c0 .372.17.508.271.508.22 0 .407-.136.78-.508 1.203-1.355 2.067-3.44 2.067-3.44.119-.254.322-.491.763-.491h1.744c.525 0 .644.271.525.643-.22 1.017-2.354 4.031-2.354 4.031-.186.305-.254.44 0 .78.186.254.796.779 1.203 1.253.745.847 1.32 1.558 1.473 2.05.17.49-.085.744-.576.744z"/></svg>
                 ВКонтакте
             </a>
-            <a href="#" target="_blank" class="social-btn">
+            <a href="https://t.me/lela_artiste" target="_blank" class="social-btn">
                 <svg viewBox="0 0 24 24" fill="#26A5E4"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.182 1.907-1.426 9.018-2.06 12.413-.268 1.443-.798 1.924-1.313 1.973-1.123.107-1.98-.743-3.067-1.457-1.698-1.114-2.656-1.802-4.303-2.886-1.906-1.254-.669-1.943.415-3.07.451-.467 2.472-2.493 2.512-2.663.005-.021.01-.101-.036-.141s-.112-.024-.16-.014c-.068.014-1.092.694-3.078 2.034-.29.199-.553.296-.789.29-.259-.008-.756-.149-1.128-.27-.46-.149-.826-.323-.79-.536.048-.248.594-.504 1.634-.946 3.236-1.393 5.394-2.32 6.476-2.77 3.078-1.281 3.718-1.503 4.133-1.508.091-.001.295.021.427.128a.42.42 0 0 1 .146.303c.003.098-.011.197-.031.294z"/></svg>
                 Telegram
             </a>
@@ -1294,10 +1323,10 @@ footer p { color: var(--brown); font-size: 14px; margin-bottom: 10px; max-width:
     </div>
 </div>
 
-<!-- 🔍 МОДАЛЬНОЕ ОКНО ДЛЯ БОЛЬШОГО ФАН-АРТА -->
+<!-- 🔍 МОДАЛЬНОЕ ОКНО ДЛЯ БОЛЬШОГО ФОТО -->
 <div class="image-modal" id="image-modal">
     <button class="image-modal-close" onclick="closeImageModal()">×</button>
-    <img id="image-modal-img" src="" alt="Фан-арт">
+    <img id="image-modal-img" src="" alt="Фото">
 </div>
 
 <!-- 🚫 МОДАЛЬНОЕ ОКНО ЦЕНЗУРЫ — img100 -->
@@ -1307,10 +1336,10 @@ footer p { color: var(--brown); font-size: 14px; margin-bottom: 10px; max-width:
 
 <div class="notification" id="notification"></div>
 
-<!-- 🦊 img63 — плавающий лисёнок -->
+<!-- 🦊 плавающий лисёнок -->
 <img src="./images/img80.png" alt="" class="floating-fox" id="floating-fox">
 
-<!-- 🦊 img64 — появляется снизу при ошибке в форме -->
+<!-- 🦊 появляется снизу при ошибке в форме -->
 <img src="./images/img82.png" alt="" class="error-fox" id="error-fox">
 
 <script>
@@ -1342,11 +1371,7 @@ const productDetail = document.getElementById('product-detail');
 navButtons.forEach(btn => {
     btn.addEventListener('click', () => {
         const pageId = btn.dataset.page;
-
-        if (pageId !== 'shop-page') {
-            closeProductDetail();
-        }
-
+        if (pageId !== 'shop-page') closeProductDetail();
         navButtons.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         pages.forEach(p => p.classList.remove('active'));
@@ -1355,15 +1380,13 @@ navButtons.forEach(btn => {
 });
 
 function scrollToTop() {
-    if (shopPage.classList.contains('viewing-detail')) {
-        closeProductDetail();
-    }
+    if (shopPage.classList.contains('viewing-detail')) closeProductDetail();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 /* ================= ТОВАРЫ ================= */
 const products = [
-    { id: 1, title: 'Секретный бокс — 1 игрушка', price: 1499, img: img('img5'), gallery: [img('img6'), img('img7'), img('img8'), img('img9'), img('img10'),], description: 'Случайный секретный бокс с одной игрушкой из вселенной «За Лисом». Каждый бокс — это маленькое приключение: внутри вас ждёт любимый герой. Идеальный подарок для себя или близких.', characteristics: [['Материал', 'ткань Минки, полиэстер'], ['Высота игрушки', '8–10 см'], ['Упаковка', 'Секретная коробка'], ['Возраст', '6+'], ['Производство', 'Россия']] },
+    { id: 1, title: 'Секретный бокс — 1 игрушка', price: 1499, img: img('img5'), gallery: [img('img6'), img('img7'), img('img8'), img('img9'), img('img10')], description: 'Случайный секретный бокс с одной игрушкой из вселенной «За Лисом». Каждый бокс — это маленькое приключение: внутри вас ждёт любимый герой. Идеальный подарок для себя или близких.', characteristics: [['Материал', 'ткань Минки, полиэстер'], ['Высота игрушки', '8–10 см'], ['Упаковка', 'Секретная коробка'], ['Возраст', '6+'], ['Производство', 'Россия']] },
     { id: 2, title: 'Секретный бокс — 6 игрушек', price: 7499, img: img('img11'), gallery: [img('img12'), img('img13'), img('img14'), img('img15'), img('img16')], description: 'Большой набор из шести секретных боксов. Гарантированно выпадает вся коллекция игрушек — все герои вселенной «За Лисом» теперь будут жить на вашей полке.', characteristics: [['Материал', 'ткань Минки, полиэстер'], ['Количество', '6 мягких игрушек'], ['Гарантия', 'Все игрушки коллекции'], ['Упаковка', 'Подарочная коробка'], ['Возраст', '6+']] },
     { id: 3, title: 'Блокнот для записей', price: 599, img: img('img17'), gallery: [img('img18'), img('img19'), img('img20')], description: 'Уютный блокнот с иллюстрациями вселенной «За Лисом». Плотная бумага, приятная на ощупь обложка и закладка-ленточка — всё, чтобы ваши мысли и идеи обретали форму.', characteristics: [['Страниц', '120'], ['Бумага', 'Кремовая, 90 г/м²'], ['Обложка', 'Мягкая, матовая'], ['Формат', 'A5'], ['Закладка', 'Атласная лента']] },
     { id: 4, title: 'Скетчбук для рисования', price: 999, img: img('img21'), gallery: [img('img22'), img('img23'), img('img24')], description: 'Профессиональный скетчбук для художников и всех, кто любит рисовать. Плотная бумага подходит для карандаша, линера, акварели и маркеров.', characteristics: [['Страниц', '80'], ['Бумага', 'Акварельная, 180 г/м²'], ['Обложка', 'Твёрдая, с иллюстрацией'], ['Формат', 'A4'], ['Скрепление', 'Прошивка']] },
@@ -1378,86 +1401,45 @@ products.forEach(p => {
     const card = document.createElement('div');
     card.className = 'product-card';
     card.onclick = () => openProduct(p.id);
-    card.innerHTML = `
-        <img src="${p.img}" alt="${p.title}">
-        <div class="product-info">
-            <h3>${p.title}</h3>
-            <div class="product-price">${p.price.toLocaleString('ru-RU')} ₽</div>
-        </div>
-    `;
+    card.innerHTML = `<img src="${p.img}" alt="${p.title}"><div class="product-info"><h3>${p.title}</h3><div class="product-price">${p.price.toLocaleString('ru-RU')} ₽</div></div>`;
     productsGrid.appendChild(card);
 });
 
-let currentProduct = null;
-let currentImageIndex = 0;
-let selectedPhone = null;
+let currentProduct = null, currentImageIndex = 0, selectedPhone = null;
 
 function openProduct(id) {
     currentProduct = products.find(p => p.id === id);
     currentImageIndex = 0;
     selectedPhone = null;
-
     document.getElementById('detail-title').textContent = currentProduct.title;
     document.getElementById('detail-price').textContent = currentProduct.price.toLocaleString('ru-RU') + ' ₽';
     document.getElementById('detail-description').textContent = currentProduct.description;
     document.getElementById('detail-img').src = currentProduct.gallery[0];
-
-    const charDiv = document.getElementById('detail-characteristics');
-    charDiv.innerHTML = '<h4>Характеристики</h4><ul>' +
-        currentProduct.characteristics.map(c => `<li><span>${c[0]}</span><span>${c[1]}</span></li>`).join('') +
-        '</ul>';
-
+    document.getElementById('detail-characteristics').innerHTML = '<h4>Характеристики</h4><ul>' + currentProduct.characteristics.map(c => `<li><span>${c[0]}</span><span>${c[1]}</span></li>`).join('') + '</ul>';
     renderGalleryDots();
-
     const phoneContainer = document.getElementById('phone-selector-container');
     if (currentProduct.hasPhoneSelector) {
         const models = ['iPhone 14', 'iPhone 16 Pro', 'iPhone 17', 'iPhone Mini', 'Huawei', 'Google', 'Poco'];
-        phoneContainer.innerHTML = `
-            <div class="phone-selector">
-                <h4>Выберите модель телефона:</h4>
-                <div class="phone-options">
-                    ${models.map(m => `<div class="phone-option" onclick="selectPhone(this, '${m}')">${m}</div>`).join('')}
-                </div>
-            </div>
-        `;
-    } else {
-        phoneContainer.innerHTML = '';
-    }
-
+        phoneContainer.innerHTML = `<div class="phone-selector"><h4>Выберите модель телефона:</h4><div class="phone-options">${models.map(m => `<div class="phone-option" onclick="selectPhone(this, '${m}')">${m}</div>`).join('')}</div></div>`;
+    } else { phoneContainer.innerHTML = ''; }
     shopPage.classList.add('viewing-detail');
     productDetail.classList.add('active');
 }
 
-function closeProductDetail() {
-    shopPage.classList.remove('viewing-detail');
-    productDetail.classList.remove('active');
-}
-
-function backToShop() {
-    closeProductDetail();
-}
+function closeProductDetail() { shopPage.classList.remove('viewing-detail'); productDetail.classList.remove('active'); }
+function backToShop() { closeProductDetail(); }
 
 function renderGalleryDots() {
-    const dotsContainer = document.getElementById('gallery-dots');
-    dotsContainer.innerHTML = currentProduct.gallery.map((_, i) =>
-        `<span class="${i === currentImageIndex ? 'active' : ''}" onclick="goToImage(${i})"></span>`
-    ).join('');
+    document.getElementById('gallery-dots').innerHTML = currentProduct.gallery.map((_, i) => `<span class="${i === currentImageIndex ? 'active' : ''}" onclick="goToImage(${i})"></span>`).join('');
 }
-
 function updateGalleryImage() {
     const imgEl = document.getElementById('detail-img');
     imgEl.style.opacity = '0';
-    setTimeout(() => {
-        imgEl.src = currentProduct.gallery[currentImageIndex];
-        imgEl.style.opacity = '1';
-        renderGalleryDots();
-    }, 250);
+    setTimeout(() => { imgEl.src = currentProduct.gallery[currentImageIndex]; imgEl.style.opacity = '1'; renderGalleryDots(); }, 250);
 }
-
 function nextImage() { currentImageIndex = (currentImageIndex + 1) % currentProduct.gallery.length; updateGalleryImage(); }
 function prevImage() { currentImageIndex = (currentImageIndex - 1 + currentProduct.gallery.length) % currentProduct.gallery.length; updateGalleryImage(); }
 function goToImage(i) { currentImageIndex = i; updateGalleryImage(); }
-
 function selectPhone(el, model) {
     document.querySelectorAll('.phone-option').forEach(o => o.classList.remove('selected'));
     el.classList.add('selected');
@@ -1466,35 +1448,15 @@ function selectPhone(el, model) {
 
 /* ================= КОРЗИНА ================= */
 let cart = JSON.parse(localStorage.getItem('zalisom_cart') || '[]');
-
-function updateCartCount() {
-    document.getElementById('cart-count').textContent = cart.reduce((s, i) => s + i.qty, 0);
-}
-function saveCart() {
-    localStorage.setItem('zalisom_cart', JSON.stringify(cart));
-    updateCartCount();
-}
+function updateCartCount() { document.getElementById('cart-count').textContent = cart.reduce((s, i) => s + i.qty, 0); }
+function saveCart() { localStorage.setItem('zalisom_cart', JSON.stringify(cart)); updateCartCount(); }
 
 function addToCart() {
-    if (currentProduct.hasPhoneSelector && !selectedPhone) {
-        showNotification('Пожалуйста, выберите модель телефона');
-        return;
-    }
+    if (currentProduct.hasPhoneSelector && !selectedPhone) { showNotification('Пожалуйста, выберите модель телефона'); return; }
     const key = currentProduct.id + (selectedPhone ? '_' + selectedPhone : '');
     const existing = cart.find(i => i.key === key);
-    if (existing) {
-        existing.qty++;
-    } else {
-        cart.push({
-            key,
-            id: currentProduct.id,
-            title: currentProduct.title,
-            price: currentProduct.price,
-            img: currentProduct.img,
-            model: selectedPhone,
-            qty: 1
-        });
-    }
+    if (existing) existing.qty++;
+    else cart.push({ key, id: currentProduct.id, title: currentProduct.title, price: currentProduct.price, img: currentProduct.img, model: selectedPhone, qty: 1 });
     saveCart();
     showNotification('Товар добавлен в корзину');
 }
@@ -1505,61 +1467,35 @@ function openCart() {
     renderCart();
     document.getElementById('cart-modal').classList.add('active');
 }
-function closeCart() {
-    document.getElementById('cart-modal').classList.remove('active');
-}
+function closeCart() { document.getElementById('cart-modal').classList.remove('active'); }
 
 function renderCart() {
     const container = document.getElementById('cart-items');
-    const totalBlock = document.getElementById('cart-total-block');
-    const checkoutBtn = document.getElementById('checkout-btn');
-
     if (cart.length === 0) {
         container.innerHTML = '<div class="cart-empty">Корзина пока пуста.<br>Загляните в Лавку Лиса ✦</div>';
-        totalBlock.style.display = 'none';
-        checkoutBtn.style.display = 'none';
+        document.getElementById('cart-total-block').style.display = 'none';
+        document.getElementById('checkout-btn').style.display = 'none';
         return;
     }
-
-    container.innerHTML = cart.map(item => `
-        <div class="cart-item">
-            <img src="${item.img}" alt="${item.title}">
-            <div class="cart-item-info">
-                <h4>${item.title}</h4>
-                ${item.model ? `<div class="cart-item-model">Модель: ${item.model}</div>` : ''}
-                <div class="cart-item-price">${item.price.toLocaleString('ru-RU')} ₽ × ${item.qty}</div>
-            </div>
-            <button class="cart-remove" onclick="removeFromCart('${item.key}')">×</button>
-        </div>
-    `).join('');
-
+    container.innerHTML = cart.map(item => `<div class="cart-item"><img src="${item.img}" alt="${item.title}"><div class="cart-item-info"><h4>${item.title}</h4>${item.model ? `<div class="cart-item-model">Модель: ${item.model}</div>` : ''}<div class="cart-item-price">${item.price.toLocaleString('ru-RU')} ₽ × ${item.qty}</div></div><button class="cart-remove" onclick="removeFromCart('${item.key}')">×</button></div>`).join('');
     const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
     document.getElementById('cart-total').textContent = total.toLocaleString('ru-RU') + ' ₽';
-    totalBlock.style.display = 'flex';
-    checkoutBtn.style.display = 'block';
+    document.getElementById('cart-total-block').style.display = 'flex';
+    document.getElementById('checkout-btn').style.display = 'block';
 }
-
-function removeFromCart(key) {
-    cart = cart.filter(i => i.key !== key);
-    saveCart();
-    renderCart();
-}
+function removeFromCart(key) { cart = cart.filter(i => i.key !== key); saveCart(); renderCart(); }
 
 /* ================= ОФОРМЛЕНИЕ ЗАКАЗА ================= */
 let selectedPayment = null;
-
 function showCheckoutForm() {
     document.getElementById('cart-view').classList.add('hidden');
     document.getElementById('checkout-form').classList.add('active');
-    const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
-    document.getElementById('checkout-total').textContent = total.toLocaleString('ru-RU') + ' ₽';
+    document.getElementById('checkout-total').textContent = cart.reduce((s, i) => s + i.price * i.qty, 0).toLocaleString('ru-RU') + ' ₽';
 }
-
 function backToCart() {
     document.getElementById('cart-view').classList.remove('hidden');
     document.getElementById('checkout-form').classList.remove('active');
 }
-
 function selectPayment(el, method) {
     document.querySelectorAll('.payment-method').forEach(o => o.classList.remove('selected'));
     el.classList.add('selected');
@@ -1567,44 +1503,21 @@ function selectPayment(el, method) {
     document.getElementById('card-fields').style.display = (method === 'card') ? 'block' : 'none';
 }
 
-/* ============================================================
-   📅 АВТОМАТИЧЕСКИЙ СЛЭШ В ДАТЕ КАРТЫ (MM/ГГ)
-   При вводе 2 цифр автоматически добавляется "/"
-   ============================================================ */
 const cardExpiryInput = document.getElementById('card-expiry');
-cardExpiryInput.addEventListener('input', function(e) {
-    // Убираем всё кроме цифр
+cardExpiryInput.addEventListener('input', function() {
     let value = this.value.replace(/\D/g, '');
-
-    // Если введено больше 4 цифр — обрезаем
-    if (value.length > 4) {
-        value = value.substring(0, 4);
-    }
-
-    // Если введено 2 или более цифр — добавляем слэш
-    if (value.length >= 2) {
-        value = value.substring(0, 2) + '/' + value.substring(2);
-    }
-
+    if (value.length > 4) value = value.substring(0, 4);
+    if (value.length >= 2) value = value.substring(0, 2) + '/' + value.substring(2);
     this.value = value;
 });
-
-// Дополнительно: при удалении слэша вручную — корректная обработка
 cardExpiryInput.addEventListener('keydown', function(e) {
-    // Разрешаем backspace, delete, стрелки, tab
     if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)) {
-        // Если курсор сразу после слэша и нажат backspace — удаляем и слэш тоже
         if (e.key === 'Backspace' && this.selectionStart === 3 && this.value.charAt(2) === '/') {
-            setTimeout(() => {
-                this.value = this.value.substring(0, 2);
-            }, 0);
+            setTimeout(() => { this.value = this.value.substring(0, 2); }, 0);
         }
         return;
     }
-    // Блокируем всё кроме цифр
-    if (!/^\d$/.test(e.key) && !e.ctrlKey && !e.metaKey) {
-        e.preventDefault();
-    }
+    if (!/^\d$/.test(e.key) && !e.ctrlKey && !e.metaKey) e.preventDefault();
 });
 
 function isValidEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
@@ -1633,8 +1546,7 @@ function submitOrder() {
     }
 
     showNotification('Заказ оформлен! Мы свяжемся с вами ✦');
-    cart = [];
-    saveCart();
+    cart = []; saveCart();
     document.querySelectorAll('#checkout-form input').forEach(i => i.value = '');
     document.querySelectorAll('.payment-method').forEach(o => o.classList.remove('selected'));
     selectedPayment = null;
@@ -1653,107 +1565,49 @@ function showErrorFox() {
     fox.classList.remove('show');
     setTimeout(() => {
         fox.classList.add('show');
-        errorFoxTimeout = setTimeout(() => {
-            fox.classList.remove('show');
-        }, 3000);
+        errorFoxTimeout = setTimeout(() => { fox.classList.remove('show'); }, 3000);
     }, 50);
 }
 
 /* ================= ПЛАШКА СОЦСЕТЕЙ ================= */
 function openSocialsModal() { document.getElementById('socials-modal').classList.add('active'); }
 function closeSocialsModal() { document.getElementById('socials-modal').classList.remove('active'); }
-document.getElementById('socials-modal').addEventListener('click', (e) => {
-    if (e.target.id === 'socials-modal') closeSocialsModal();
-});
+document.getElementById('socials-modal').addEventListener('click', (e) => { if (e.target.id === 'socials-modal') closeSocialsModal(); });
 
-/* ============================================================
-   🚫 ЦЕНЗУРА — проверка на нецензурную лексику
-   ============================================================ */
-const profanityList = [
-    'блять', 'блядь', 'бля', 'сука', 'суки', 'пизд', 'пизда', 'пиздец', 'хуй', 'хуя', 'хуе', 'хую', 'котакбас', 'еблан', 'ебать', 'ёбан', 'fuck', 'ёбать', 'ебну', 'ёбну', 'мудак', 'мудила', 'залупа', 'пидор', 'петух', 'гандон', 'долбоёб', 'долбоеб', 'ёб', 'еб', 'шлюха', 'бл', 'хер'
-];
+/* ================= ЦЕНЗУРА ================= */
+const profanityList = ['блять', 'блядь', 'бля', 'сука', 'суки', 'пизд', 'пизда', 'пиздец', 'хуй', 'хуя', 'хуе', 'хую', 'еблан', 'ебать', 'ёбан', 'fuck', 'ёбать', 'ебну', 'ёбну', 'мудак', 'мудила', 'залупа', 'пидор', 'петух', 'гандон', 'долбоёб', 'долбоеб', 'ёб', 'еб', 'шлюха', 'бл', 'хер'];
 
 function containsProfanity(text) {
     if (!text) return false;
-
-    // Приводим к нижнему регистру
-    let normalized = text.toLowerCase();
-
-    // Заменяем типичные замены букв
-    normalized = normalized
-        .replace(/ё/g, 'е')
-        .replace(/@/g, 'а')
-        .replace(/6/g, 'б')
-        .replace(/8/g, 'б')
-        .replace(/0/g, 'о')
-        .replace(/\$/g, 'с')
-        .replace(/4/g, 'ч')
-        .replace(/3/g, 'з')
-        .replace(/[!|]/g, '')
-        .replace(/\s+/g, '');
-
-    // Проверяем наличие запрещённых слов
-    for (let word of profanityList) {
-        if (normalized.includes(word)) {
-            return true;
-        }
-    }
-
+    let normalized = text.toLowerCase().replace(/ё/g, 'е').replace(/@/g, 'а').replace(/6/g, 'б').replace(/8/g, 'б').replace(/0/g, 'о').replace(/\$/g, 'с').replace(/4/g, 'ч').replace(/3/g, 'з').replace(/[!|]/g, '').replace(/\s+/g, '');
+    for (let word of profanityList) { if (normalized.includes(word)) return true; }
     return false;
 }
 
-/* 🚫 ПОКАЗАТЬ КАРТИНКУ ЦЕНЗУРЫ img100 на 2 секунды */
 let censorshipTimeout;
 function showCensorshipModal() {
     const modal = document.getElementById('censorship-modal');
     clearTimeout(censorshipTimeout);
     modal.classList.add('active');
-    censorshipTimeout = setTimeout(() => {
-        modal.classList.remove('active');
-    }, 2000);
+    censorshipTimeout = setTimeout(() => { modal.classList.remove('active'); }, 2000);
 }
 
-/* ================= КОММЕНТАРИИ С ФАН-АРТАМИ ================= */
-function loadComments(type) {
-    try { return JSON.parse(localStorage.getItem('zalisom_comments_' + type) || '[]'); }
-    catch (e) { return []; }
-}
-function saveComments(type, comments) {
-    try { localStorage.setItem('zalisom_comments_' + type, JSON.stringify(comments)); }
-    catch (e) { showNotification('Не удалось сохранить (слишком большой файл)'); }
-}
+/* ================= КОММЕНТАРИИ ================= */
+function loadComments(type) { try { return JSON.parse(localStorage.getItem('zalisom_comments_' + type) || '[]'); } catch (e) { return []; } }
+function saveComments(type, comments) { try { localStorage.setItem('zalisom_comments_' + type, JSON.stringify(comments)); } catch (e) { showNotification('Не удалось сохранить (слишком большой файл)'); } }
 
 function renderComments(type) {
     const comments = loadComments(type);
     const container = document.getElementById(type + '-comments');
-    if (comments.length === 0) {
-        container.innerHTML = '<div class="cart-empty">Пока нет комментариев. Будьте первым!</div>';
-        return;
-    }
+    if (comments.length === 0) { container.innerHTML = '<div class="cart-empty">Пока нет комментариев. Будьте первым!</div>'; return; }
     container.innerHTML = comments.map((c, index) => {
-        const fanartHtml = c.image
-            ? `<div class="comment-fanart" onclick="openImageModal('${c.image.replace(/'/g, "\\'")}')">
-                   <img src="${c.image}" alt="Фан-арт">
-               </div>`
-            : '';
-        return `
-            <div class="comment">
-                <div class="comment-main">
-                    <div class="comment-author">${escapeHtml(c.name)}</div>
-                    <div class="comment-text">${escapeHtml(c.text)}</div>
-                    <div class="comment-date">${c.date}</div>
-                </div>
-                ${fanartHtml}
-                <button class="comment-delete" onclick="deleteComment('${type}', ${index})" title="Удалить">×</button>
-            </div>
-        `;
+        const fanartHtml = c.image ? `<div class="comment-fanart zoom-container" onclick="openImageModal('${c.image.replace(/'/g, "\\'")}')"><img src="${c.image}" alt="Фан-арт"></div>` : '';
+        return `<div class="comment"><div class="comment-main"><div class="comment-author">${escapeHtml(c.name)}</div><div class="comment-text">${escapeHtml(c.text)}</div><div class="comment-date">${c.date}</div></div>${fanartHtml}<button class="comment-delete" onclick="deleteComment('${type}', ${index})" title="Удалить">×</button></div>`;
     }).join('');
 }
 
-/* 🗑️ УДАЛЕНИЕ КОММЕНТАРИЯ */
 function deleteComment(type, index) {
     if (!confirm('Удалить этот комментарий?')) return;
-
     const comments = loadComments(type);
     comments.splice(index, 1);
     saveComments(type, comments);
@@ -1762,15 +1616,10 @@ function deleteComment(type, index) {
 }
 
 let currentFanartData = null;
-
 function previewFanart(event) {
     const file = event.target.files[0];
     if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
-        showNotification('Файл слишком большой (макс. 2 МБ)');
-        event.target.value = '';
-        return;
-    }
+    if (file.size > 2 * 1024 * 1024) { showNotification('Файл слишком большой (макс. 2 МБ)'); event.target.value = ''; return; }
     const reader = new FileReader();
     reader.onload = e => {
         currentFanartData = e.target.result;
@@ -1780,7 +1629,6 @@ function previewFanart(event) {
     };
     reader.readAsDataURL(file);
 }
-
 function removeFanartPreview() {
     currentFanartData = null;
     document.getElementById('fanart-file').value = '';
@@ -1791,45 +1639,25 @@ function addComment(type) {
     const name = document.getElementById(type + '-name').value.trim();
     const text = document.getElementById(type + '-comment').value.trim();
     if (!name || !text) { showNotification('Заполните имя и комментарий'); return; }
-
-    // 🚫 ПРОВЕРКА ЦЕНЗУРЫ
-    if (containsProfanity(name) || containsProfanity(text)) {
-        showCensorshipModal();
-        showNotification('Комментарий содержит запрещённую лексику');
-        return;
-    }
-
+    if (containsProfanity(name) || containsProfanity(text)) { showCensorshipModal(); showNotification('Комментарий содержит запрещённую лексику'); return; }
     const comments = loadComments(type);
-    const newComment = {
-        name, text,
-        date: new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }),
-        image: null
-    };
-
-    if (type === 'fanart' && currentFanartData) {
-        newComment.image = currentFanartData;
-    }
-
+    const newComment = { name, text, date: new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }), image: null };
+    if (type === 'fanart' && currentFanartData) newComment.image = currentFanartData;
     comments.unshift(newComment);
     saveComments(type, comments);
-
     document.getElementById(type + '-name').value = '';
     document.getElementById(type + '-comment').value = '';
-
     if (type === 'fanart') removeFanartPreview();
-
     renderComments(type);
     showNotification('Комментарий добавлен ✦');
 }
 
-function escapeHtml(s) {
-    return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
+function escapeHtml(s) { return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 renderComments('process');
 renderComments('fanart');
 
-/* 🔍 МОДАЛЬНОЕ ОКНО ДЛЯ БОЛЬШОГО ФАН-АРТА */
+/* ================= 🔍 МОДАЛЬНОЕ ОКНО ДЛЯ БОЛЬШОГО ФОТО ================= */
 function openImageModal(src) {
     document.getElementById('image-modal-img').src = src;
     document.getElementById('image-modal').classList.add('active');
@@ -1837,15 +1665,9 @@ function openImageModal(src) {
 function closeImageModal() {
     document.getElementById('image-modal').classList.remove('active');
 }
-document.getElementById('image-modal').addEventListener('click', (e) => {
-    if (e.target.id === 'image-modal') closeImageModal();
-});
+document.getElementById('image-modal').addEventListener('click', (e) => { if (e.target.id === 'image-modal') closeImageModal(); });
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        closeImageModal();
-        closeSocialsModal();
-        document.getElementById('censorship-modal').classList.remove('active');
-    }
+    if (e.key === 'Escape') { closeImageModal(); closeSocialsModal(); document.getElementById('censorship-modal').classList.remove('active'); }
 });
 
 /* ================= УВЕДОМЛЕНИЯ ================= */
@@ -1858,42 +1680,61 @@ function showNotification(text) {
     notifTimeout = setTimeout(() => n.classList.remove('show'), 2500);
 }
 
-/* ================= 🦊 ПЛАВАЮЩАЯ КАРТИНКА img63 ================= */
+/* ================= 🎯 ЭФФЕКТ ЗУМА ПОД КУРСОРОМ (50%) =================
+   Работает ТОЛЬКО для элементов с классом .zoom-container
+   (галерея товара и миниатюры фан-артов в комментариях)
+   ============================================================ */
+document.addEventListener('mousemove', (e) => {
+    const container = e.target.closest('.zoom-container');
+    if (!container) return;
+    
+    const target = container.tagName === 'IMG' ? container : container.querySelector('img');
+    if (!target) return;
+
+    const rect = container.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const xPercent = (x / rect.width) * 100;
+    const yPercent = (y / rect.height) * 100;
+
+    target.classList.add('is-moving');
+    target.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+});
+
+document.addEventListener('mouseleave', (e) => {
+    const container = e.target.closest('.zoom-container');
+    if (!container) return;
+    
+    const target = container.tagName === 'IMG' ? container : container.querySelector('img');
+    if (!target) return;
+
+    target.classList.remove('is-moving');
+    target.style.transformOrigin = 'center center';
+}, true);
+
+/* ================= ПЛАВАЮЩАЯ КАРТИНКА ================= */
 const floatingFox = document.getElementById('floating-fox');
-const horizontalPositions = [
-    { left: '30px', right: 'auto' },
-    { left: '50%', right: 'auto', transform: 'translateX(-50%)' },
-    { left: 'auto', right: '30px' }
-];
+const horizontalPositions = [{ left: '30px', right: 'auto' }, { left: '50%', right: 'auto', transform: 'translateX(-50%)' }, { left: 'auto', right: '30px' }];
 let isFoxVisible = false;
 
 function showFloatingFox() {
     if (isFoxVisible) return;
-    floatingFox.style.left = '';
-    floatingFox.style.right = '';
-    floatingFox.style.transform = '';
-    const pos = horizontalPositions[Math.floor(Math.random() * horizontalPositions.length)];
-    Object.assign(floatingFox.style, pos);
+    floatingFox.style.left = ''; floatingFox.style.right = ''; floatingFox.style.transform = '';
+    Object.assign(floatingFox.style, horizontalPositions[Math.floor(Math.random() * horizontalPositions.length)]);
     floatingFox.classList.add('show');
     isFoxVisible = true;
 }
-
-floatingFox.addEventListener('mouseenter', () => {
-    floatingFox.classList.remove('show');
-    isFoxVisible = false;
-});
+floatingFox.addEventListener('mouseenter', () => { floatingFox.classList.remove('show'); isFoxVisible = false; });
 
 function scheduleFloatingFox() {
-    const delay = 30000 + Math.random() * 30000;
     setTimeout(() => {
         if (mainSite.classList.contains('visible')) showFloatingFox();
         scheduleFloatingFox();
-    }, delay);
+    }, 30000 + Math.random() * 30000);
 }
 scheduleFloatingFox();
-
 updateCartCount();
 </script>
-
 </body>
 </html>
